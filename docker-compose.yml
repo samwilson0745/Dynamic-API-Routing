@@ -1,0 +1,26 @@
+services:
+  api-gateway:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    container_name: api-gateway
+    ports:
+      - "8000:8000"
+    networks:
+      - gateway-network
+
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./nginx-docker/nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - "8080:8080"
+    depends_on:
+      - api-gateway
+    networks:
+      - gateway-network
+    restart: always
+
+networks:
+  gateway-network:
+    driver: bridge
